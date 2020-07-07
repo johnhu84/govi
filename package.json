@@ -1,0 +1,26 @@
+{
+  "name": "govi",
+  "version": "1.0.0",
+  "description": "07/07/2020\r Govi exercise\r Exercise",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johnhu84/govi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/johnhu84/govi/issues"
+  },
+  "homepage": "https://github.com/johnhu84/govi#readme",
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "clear": "^0.1.0",
+    "figlet": "^1.4.0",
+    "inquirer": "^7.3.0",
+  }
+}
