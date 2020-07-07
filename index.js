@@ -2,28 +2,46 @@ const chalk = require('chalk');
 const clear = require('clear');
 const figlet = require('figlet');
 const inquirer  = require('./lib/inquirer');
-const needle = require('needle');
+var needle = require('needle');
 const invoice_url = 'https://bcore-mock.herokuapp.com/invoice';
 clear();
 
 console.log(
   chalk.yellow(
-    figlet.textSync('Ginit', { horizontalLayout: 'full' })
+    figlet.textSync('Govi exercise', { horizontalLayout: 'full' })
   )
 );
 
-if (files.directoryExists('.git')) {
-  console.log(chalk.red('Already a Git repository!'));
-} else {
-  console.log(chalk.red('No git repository, exiting...'));
-  process.exit();
+function invoicePrettyPrint(invoices) {
+  invoices.forEach(invoice => {
+    console.log(`id: ${invoice.id}, amount: ${invoice.amount}, date: ${invoice.date},
+      due: ${invoice.due}, paid: ${invoice.paid}, paidDate: ${invoice.paidDate},
+      currency: ${invoice.currency}\n`);
+  })
 }
 
 const run = async () => {
   while (true) {
     const commands = await inquirer.askForCommand();
     console.log(commands);
-    switch (commands.command) {
+    let commandHelper = commands.command;
+    switch (commandHelper) {
+      case "1":
+        commandHelper = inquirer.default_command;
+        break;
+      case "2":
+        commandHelper = inquirer.second_command;
+        break;
+      case "3":
+        commandHelper = inquirer.third_command;
+        break;
+      case "4":
+        commandHelper = inquirer.fourth_command;
+        break;
+      default:
+        break;
+    }
+    switch (commandHelper) {
       case 'exit':
         console.log('exiting...');
         process.exit();
@@ -31,19 +49,15 @@ const run = async () => {
       case inquirer.default_command:
         console.log(`is ${inquirer.default_command}`);
         needle.get(invoice_url, function(error, response) {
-          //console.log(error + ", " + response.statusCode);
-
           if (response.statusCode == 200) {
-            console.log(response.body);
             let invoices = response.body;//JSON.parse(response.body);
-            console.log(invoices);
             invoices.sort(function(a, b) {
               var ad = new Date(a.paidDate);
               var bd = new Date(b.paidDate);
               return ad.getTime() - bd.getTime();
             })
             console.log(`result for command ${inquirer.default_command}\n`);
-            console.log(invoices);
+            invoicePrettyPrint(invoices);//console.log(invoices);
           } else {
             console.log(`error for ${inquirer.default_command}`);
           }
@@ -59,7 +73,7 @@ const run = async () => {
               return bd.getTime() - ad.getTime();
             })
             console.log(`result for command ${inquirer.second_command}\n`);
-            console.log(invoices);
+            invoicePrettyPrint(invoices);//console.log(invoices);
           } else {
             console.log(`error for ${inquirer.second_command}`);
           }
@@ -75,7 +89,7 @@ const run = async () => {
               return a.amount - b.amount;
             })
             console.log(`result for command ${inquirer.third_command}\n`);
-            console.log(invoices);
+            invoicePrettyPrint(invoices);//console.log(invoices);
           } else {
             console.log(`error for ${inquirer.third_command}`);
           }
@@ -89,7 +103,7 @@ const run = async () => {
               return b.amount - a.amount;
             })
             console.log(`result for command ${inquirer.fourth_command}\n`);
-            console.log(invoices);
+            invoicePrettyPrint(invoices);//console.log(invoices);
           } else {
             console.log(`error for ${inquirer.fourth_command}`);
           }
