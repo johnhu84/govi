@@ -5,12 +5,94 @@ const inquirer  = require('./lib/inquirer');
 var needle = require('needle');
 const invoice_url = 'https://bcore-mock.herokuapp.com/invoice';
 clear();
-
-console.log(
-  chalk.yellow(
-    figlet.textSync('Govi exercise', { horizontalLayout: 'full' })
-  )
-);
+let hasCommandArgumentCommand = false;
+if (process.argv.length > 2) {
+  //console.log("line 10 here: " + process.argv[2]);
+  switch (process.argv[2]) {
+    case inquirer.default_command:
+      needle.get(invoice_url, function(error, response) {
+        if (response.statusCode == 200) {
+          let invoices = response.body;//JSON.parse(response.body);
+          invoices.sort(function(a, b) {
+            var ad = new Date(a.paidDate);
+            var bd = new Date(b.paidDate);
+            return ad.getTime() - bd.getTime();
+          })
+          //invoicePrettyPrint(invoices);//console.log(invoices);*/
+          console.log(invoices);
+        } else {
+          //console.log(`error for ${inquirer.default_command}`);
+        }
+        process.exit();
+      });
+      hasCommandArgumentCommand = true;
+      break;
+    case inquirer.second_command:
+      needle.get(invoice_url, function(error, response) {
+        if (response.statusCode == 200) {
+          let invoices = response.body;//JSON.parse(response.body);
+          invoices.sort(function(a, b) {
+            var ad = new Date(a.paidDate);
+            var bd = new Date(b.paidDate);
+            return bd.getTime() - ad.getTime();
+          })
+          //console.log(`result for command ${inquirer.second_command}\n`);
+          //invoicePrettyPrint(invoices);//console.log(invoices);
+          console.log(invoices);
+        } else {
+          //console.log(`error for ${inquirer.second_command}`);
+        }
+        process.exit();
+      });
+      hasCommandArgumentCommand = true;
+      break;
+    case inquirer.third_command:
+      needle.get(invoice_url, function(error, response) {
+        if (response.statusCode == 200) {
+          let invoices = response.body;//JSON.parse(response.body);
+          invoices.sort(function(a, b) {
+            //var ad = Date.parse(a);
+            //var bd = Date.parse(b);
+            return a.amount - b.amount;
+          })
+          //console.log(`result for command ${inquirer.third_command}\n`);
+          //invoicePrettyPrint(invoices);//console.log(invoices);
+          console.log(invoices);
+        } else {
+          //console.log(`error for ${inquirer.third_command}`);
+        }
+        process.exit();
+      });
+      hasCommandArgumentCommand = true;
+      break;
+    case inquirer.fourth_command:
+      needle.get(invoice_url, function(error, response) {
+        if (response.statusCode == 200) {
+          let invoices = response.body;//JSON.parse(response.body);
+          invoices.sort(function(a, b) {
+            return b.amount - a.amount;
+          })
+          //console.log(`result for command ${inquirer.fourth_command}\n`);
+          //invoicePrettyPrint(invoices);//console.log(invoices);
+          console.log(invoices);
+        } else {
+          //console.log(`error for ${inquirer.fourth_command}`);
+        }
+        process.exit();
+      });
+      hasCommandArgumentCommand = true;
+      break;
+    default:
+      break;
+  }
+}
+if (!hasCommandArgumentCommand) {
+  console.log(
+    chalk.yellow(
+      figlet.textSync('Govi exercise', { horizontalLayout: 'full' })
+    )
+  );
+}
 
 function invoicePrettyPrint(invoices) {
   invoices.forEach(invoice => {
@@ -118,4 +200,6 @@ const run = async () => {
   }
 };
 
-run();
+if (!hasCommandArgumentCommand) {
+  run();
+}
